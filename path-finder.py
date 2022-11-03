@@ -1,6 +1,5 @@
 import curses
 from curses import wrapper
-import enum
 import queue
 import time
 
@@ -16,13 +15,20 @@ maze = [
     ["#", "#", "#", "#", "#", "#", "#", "X", "#"]
 ]
 
+
 def print_maze(maze, stdscr, path=[]):
     BLUE = curses.color_pair(1)
     RED = curses.color_pair(2)
 
     for i, row in enumerate(maze):  # Grabs the index of full row.
-        for j, value in enumerate(row):  # Grabs the column index and value of every row.
-            stdscr.addstr(i, j*2, value, BLUE)  # Grabs index, column, and value of Maze.
+        # Grabs the column index and value of every row.
+        for j, value in enumerate(row):
+            if (i, j) in path:
+                # Grabs index, column, and value of Maze.
+                stdscr.addstr(i, j*2, "X", RED)
+            else:
+                stdscr.addstr(i, j*2, value, BLUE)
+
 
 def find_start(maze, start):
     for i, row in enumerate(maze):
@@ -30,6 +36,7 @@ def find_start(maze, start):
             if value == start:
                 return i, j
     return None
+
 
 def find_path(maze, stdscr):
     start = "O"
@@ -45,20 +52,50 @@ def find_path(maze, stdscr):
         current_pos, path = q.get()
         row, col = current_pos
 
+        stdscr.clear()  # Clear screen
+        print_maze(maze, stdscr, path)
+        time.sleep(0.2)
+        stdscr.refresh()  # Refreshes the screen
+
         if maze[row][col] == end:
             return path
 
-def find_neighbors():
-    pass
+        neighbors = find_neighbors(maze, row, col)
+        for neighbor in neighbors:
+            if neighbor in visited:
+                continue
+
+            r, c = neighbor
+            if maze[r][c] == "#":
+                continue
+
+            new_path = path + [neighbor]
+            q.put((neighbor, new_path))
+            visited.add(neighbor)
+
+
+def find_neighbors(maze, row, col):
+    neighbors = []
+
+    if row > 0:  # UP
+        neighbors.append((row - 1, col))
+    if row + 1 < len(maze):  # DOWN
+        neighbors.append((row + 1, col))
+    if col > 0:  # LEFT
+        neighbors.append((row, col - 1))
+    if col + 1 < len(maze[0]):  # RIGHT
+        neighbors.append((row, col + 1))
+
+    return neighbors
+
 
 def main(stdscr):
     curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
 
-    stdscr.clear()  # Clear screen
-    print_maze(maze, stdscr)
-    stdscr.refresh()  # Refreshes the screen
-    stdscr.getch()  # Get Character. Waits until user hits a key to exit the program.
+    find_path(maze, stdscr)
+    # Get Character. Waits until user hits a key to exit the program.
+    stdscr.getch()
 
 
 wrapper(main)
