@@ -1,5 +1,6 @@
 from requests import get
 from pprint import PrettyPrinter
+import creds
 
 BASE_URL = "https://data.nba.net"
 ALL_JSON = "/prod/v1/today.json"
@@ -45,7 +46,7 @@ def get_stats():
         nickname = team['nickname']
         ppg = team['ppg']['avg']
 
-        print(f"{i + 1}. {name} - {nickname} - {ppg}")
+        print(f"{i + 1}. {name} - {nickname} - {ppg} {creds.api_key}")
 
 
 get_stats()
