@@ -38,12 +38,14 @@ def get_stats():
     teams = list(filter(lambda x: x['name'] != 'Adelaide', teams))
     teams = list(filter(lambda x: x['name'] != "Ra'anana", teams))
 
-    for team in teams:
+    # teams.sort(key=lambda x: int(x['ppg']['rank']))
+
+    for i, team in enumerate(teams):
         name = team['name']
         nickname = team['nickname']
-        ppg = team['ppg']
+        ppg = team['ppg']['avg']
 
-        print(f"{name} - {nickname} - {ppg}")
+        print(f"{i + 1}. {name} - {nickname} - {ppg}")
 
 
 get_stats()
