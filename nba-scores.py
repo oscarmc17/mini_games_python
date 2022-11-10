@@ -6,6 +6,7 @@ ALL_JSON = "/prod/v1/today.json"
 
 printer = PrettyPrinter()
 
+
 def get_links():
     data = get(BASE_URL + ALL_JSON).json()
     links = data['links']
@@ -14,8 +15,19 @@ def get_links():
 
 def get_scoreboard():
     scoreboard = get_links()['currentScoreboard']
-    data = get(BASE_URL + scoreboard).json()
+    games = get(BASE_URL + scoreboard).json()['games']
 
-    printer.pprint(data.keys())
+    for game in games:
+        home_team = game['hTeam']
+        away_team = game['vTeam']
+        clock = game['clock']
+        period = game['period']
 
-get_scoreboard()
+        print("------------------------------------------------")
+        print(
+            f"{home_team['triCode']} vs {away_team['triCode']}")
+        print(f"{home_team['score']} - {away_team['score']}")
+        print(f"{clock} - {period['current']}")
+
+
+printer.pprint(get_links())
