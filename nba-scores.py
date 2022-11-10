@@ -30,4 +30,20 @@ def get_scoreboard():
         print(f"{clock} - {period['current']}")
 
 
-printer.pprint(get_links())
+def get_stats():
+    stats = get_links()['leagueTeamStatsLeaders']
+    teams = get(
+        BASE_URL + stats).json()['league']['standard']['regularSeason']['teams']
+
+    teams = list(filter(lambda x: x['name'] != 'Adelaide', teams))
+    teams = list(filter(lambda x: x['name'] != "Ra'anana", teams))
+
+    for team in teams:
+        name = team['name']
+        nickname = team['nickname']
+        ppg = team['ppg']
+
+        print(f"{name} - {nickname} - {ppg}")
+
+
+get_stats()
