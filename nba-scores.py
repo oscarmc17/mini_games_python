@@ -59,4 +59,4 @@ def roster():
 
 roster()
 
-# printer.pprint(get_links())
+printer.pprint(get_links())
