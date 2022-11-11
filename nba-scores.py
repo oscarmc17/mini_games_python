@@ -1,6 +1,5 @@
 from requests import get
 from pprint import PrettyPrinter
-import creds
 
 BASE_URL = "https://data.nba.net"
 ALL_JSON = "/prod/v1/today.json"
@@ -46,7 +45,18 @@ def get_stats():
         nickname = team['nickname']
         ppg = team['ppg']['avg']
 
-        print(f"{i + 1}. {name} - {nickname} - {ppg} {creds.api_key}")
+        print(f"{i + 1}. {name} - {nickname} - {ppg}")
 
 
-get_stats()
+def roster():
+    roster = get_links()['leagueRosterPlayers']
+    team_roster = get(BASE_URL + roster).json()['league']['standard']
+
+    for tr in team_roster:
+        printer.pprint(tr.keys())
+        break
+
+
+roster()
+
+# printer.pprint(get_links())
