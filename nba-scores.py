@@ -3,6 +3,7 @@ from pprint import PrettyPrinter
 
 BASE_URL = "https://data.nba.net"
 ALL_JSON = "/prod/v1/today.json"
+# ALL_JSON = "/prod/v1/2018/teams/{{teamUrlCode}}/roster.json"
 
 printer = PrettyPrinter()
 
@@ -40,23 +41,46 @@ def get_stats():
 
     # teams.sort(key=lambda x: int(x['ppg']['rank']))
 
+    # printer.pprint(teams[0].keys())
     for i, team in enumerate(teams):
+        id = team['teamId']
         name = team['name']
         nickname = team['nickname']
         ppg = team['ppg']['avg']
 
-        print(f"{i + 1}. {name} - {nickname} - {ppg}")
+        print(f"{i + 1}. {id} - {name} - {nickname} - {ppg}")
 
 
-def roster():
-    roster = get_links()['leagueRosterPlayers']
-    team_roster = get(BASE_URL + roster).json()['league']['standard']
-
-    for tr in team_roster:
-        printer.pprint(tr.keys())
-        break
+get_stats()
 
 
-roster()
+# def roster():
+# roster = get_links()['leagueRosterPlayers']
+# team_roster = get(BASE_URL + roster).json()['league']['standard']
 
-printer.pprint(get_links())
+# # for team in team_roster:
+# #     first = team['firstName']
+# #     last = team['lastName']
+# #     te = team['teams']
+# #     print("-----------------")
+# #     print(f"{first} - {last} - {te}")
+# # printer.pprint(tr.keys())
+# # break
+
+# # printer.pprint(team_roster[0].keys())
+# printer.pprint(team_roster[0].keys())
+
+
+# roster()
+
+
+def team_roster():
+    roster = get_links()['teamRoster']
+    team_roster = get(BASE_URL + roster).json()
+
+    printer.pprint(roster.keys())
+
+
+# team_roster()
+
+# printer.pprint(get_links())
