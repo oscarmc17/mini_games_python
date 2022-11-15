@@ -3,8 +3,8 @@ from pprint import PrettyPrinter
 
 BASE_URL = "https://data.nba.net"
 ALL_JSON = "/prod/v1/today.json"
-# ALL_JSON = "/prod/v1/2018/teams/{{teamUrlCode}}/roster.json"
-
+# ALL_JSON = "/prod/v1/2018/teams/{{}}/roster.json"
+bulls = '1610612741'
 printer = PrettyPrinter()
 
 
@@ -12,6 +12,10 @@ def get_links():
     data = get(BASE_URL + ALL_JSON).json()
     links = data['links']
     return links
+
+
+# get_links()
+# printer.pprint(get_links())
 
 
 def get_scoreboard():
@@ -50,8 +54,9 @@ def get_stats():
 
         print(f"{i + 1}. {id} - {name} - {nickname} - {ppg}")
 
+    #  TeamID for the Bulls: 1610612741
 
-get_stats()
+# get_stats()
 
 
 # def roster():
@@ -75,12 +80,16 @@ get_stats()
 
 
 def team_roster():
-    roster = get_links()['teamRoster']
-    team_roster = get(BASE_URL + roster).json()
+    roster = get_links()['leagueSchedule']
+    all_star = get(BASE_URL + roster).json()['league']['standard']
 
-    printer.pprint(roster.keys())
+    printer.pprint(all_star[0].keys())
+
+    for star in all_star:
+        home = star['hTeam']
+
+        print(home)
+        break
 
 
-# team_roster()
-
-# printer.pprint(get_links())
+team_roster()
